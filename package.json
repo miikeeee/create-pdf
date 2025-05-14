@@ -6,7 +6,7 @@
     "node": "18.x"
   },
   "dependencies": {
-    "@sparticuz/chrome-aws-lambda": "^27.0.0",
+    "@sparticuz/chrome-aws-lambda": "^133.0.0",
     "puppeteer-core": "^20.8.1",
     "handlebars": "^4.7.7"
   }
