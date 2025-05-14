@@ -48,10 +48,9 @@ async function createPdfFromData(data) {
     let browser = null;
 
     try {
-        // Sparticuz 17.x: executablePath ist ein Promise
-        let execPath = await chromium.executablePath;
+        const execPath = await chromium.executablePath;
         if (!execPath) {
-            throw new Error("chromium.executablePath liefert undefined → Sparticuz Setup prüfen!");
+            throw new Error("❌ Sparticuz konnte den Chromium Pfad nicht bestimmen. Prüfe Setup und Pakete!");
         }
 
         browser = await puppeteer.launch({
@@ -86,12 +85,12 @@ async function createPdfFromData(data) {
         return pdfBuffer;
 
     } catch (error) {
-        console.error("Fehler beim Starten des Browsers oder PDF-Generierung:", error);
+        console.error("❌ Fehler beim Starten von Puppeteer oder PDF-Erstellung:", error);
         throw error;
     } finally {
         if (browser) {
             await browser.close();
-            console.log("Puppeteer Browser geschlossen.");
+            console.log("✅ Puppeteer Browser geschlossen.");
         }
     }
 }
@@ -107,6 +106,8 @@ export default async function handler(req, res) {
         if (!jsonData || Object.keys(jsonData).length === 0) {
             return res.status(400).json({ error: 'Keine Daten im Request Body gefunden oder Body ist leer.' });
         }
+
+        console.log("✅ Sparticuz Chromium executablePath:", await chromium.executablePath);
 
         const pdfBuffer = await createPdfFromData(jsonData);
 
