@@ -49,7 +49,7 @@ async function createPdfFromData(data) {
 
     try {
         // ✅ Richtig: kein await, keine Klammern, direkt als Property nutzen
-        let execPath = chromium.executablePath;
+        let execPath = await chromium.executablePath;
 
         if (!execPath) {
             console.warn("⚠ Kein executablePath erkannt. Fallback auf lokalen Chrome.");
