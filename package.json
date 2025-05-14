@@ -9,6 +9,6 @@
 "dependencies": {
     "handlebars": "^4.7.7", 
     "puppeteer-core": "^21.7.0", 
-    "@sparticuz/chrome-aws-lambda": "^21.7.0" 
+    "@sparticuz/chrome-aws-lambda": "^17.1.3" 
   }
 }
