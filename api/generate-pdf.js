@@ -53,7 +53,7 @@ async function createPdfFromData(data) {
     let browser = null;
 
     try {
-        const execPath = await chromium.executablePath(); // Hole den Pfad
+        const execPath = chromium.executablePath; // Hole den Pfad
         console.log("Using executablePath from chromium.executablePath():", execPath); // NEUES LOGGING
 
         if (!execPath) {
