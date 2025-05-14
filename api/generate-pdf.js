@@ -48,14 +48,10 @@ async function createPdfFromData(data) {
     let browser = null;
 
     try {
-        // ✅ Richtig: kein await, keine Klammern, direkt als Property nutzen
+        // Sparticuz 17.x: executablePath ist ein Promise
         let execPath = await chromium.executablePath;
-
         if (!execPath) {
-            console.warn("⚠ Kein executablePath erkannt. Fallback auf lokalen Chrome.");
-            execPath = process.platform === 'win32'
-                ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-                : '/usr/bin/google-chrome-stable';
+            throw new Error("chromium.executablePath liefert undefined → Sparticuz Setup prüfen!");
         }
 
         browser = await puppeteer.launch({
@@ -100,7 +96,7 @@ async function createPdfFromData(data) {
     }
 }
 
-// Vercel Serverless Function Handler
+// Vercel Serverless API Handler
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Nur POST erlaubt.' });
