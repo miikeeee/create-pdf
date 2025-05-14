@@ -1,12 +1,10 @@
-// Verwende puppeteer-core und den Community-gepflegten Chrome-Wrapper
 const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chrome-aws-lambda');
-
 const handlebars = require('handlebars');
 const fs = require('fs').promises;
 const path = require('path');
 
-// --- Handlebars Helpers (Stelle sicher, dass diese korrekt sind und funktionieren) ---
+// --- Handlebars Helpers ---
 handlebars.registerHelper('formatCurrency', function (value) {
     if (value === null || typeof value === 'undefined') return '';
     if (typeof value !== 'number') {
@@ -37,7 +35,6 @@ handlebars.registerHelper('gt', function (v1, v2) {
 });
 // --- Ende Handlebars Helpers ---
 
-
 async function createPdfFromData(data) {
     const templateHtmlPath = path.resolve(__dirname, '..', 'templates', 'template-premium.html');
     const cssContentPath = path.resolve(__dirname, '..', 'templates', 'styles-premium.css');
@@ -53,46 +50,32 @@ async function createPdfFromData(data) {
     let browser = null;
 
     try {
-        const execPath = await chromium.executablePath; // Hole den Pfad
-        console.log("Using executablePath from chromium.executablePath():", execPath); // NEUES LOGGING
+        let execPath = await chromium.executablePath();
 
         if (!execPath) {
-            // Versuche einen Fallback oder logge einen detaillierteren Fehler,
-            // da chromium.executablePath manchmal auf bestimmten Layern (wie lokal vs. Vercel) anders reagieren kann.
-            // Für Vercel sollte chromium.executablePath der primäre Weg sein.
-            // Für lokale Entwicklung mit @sparticuz/chrome-aws-lambda (wenn nicht direkt im Lambda-Layer)
-            // könnte man PUPPETEER_EXECUTABLE_PATH als Umgebungsvariable setzen.
-            console.error("FEHLER: chromium.executablePath() hat keinen Pfad zurückgegeben. Überprüfe die Installation und Umgebung von @sparticuz/chrome-aws-lambda und @sparticuz/chromium-min.");
-            // Fallback (hauptsächlich für lokale Tests, wenn execPath von chromium.executablePath() nicht funktioniert):
-            // execPath = process.env.PUPPETEER_EXECUTABLE_PATH || (process.platform === 'win32' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : '/usr/bin/google-chrome-stable');
-            // console.log("Verwende Fallback executablePath:", execPath);
-            // Für Vercel sollte der obige Fallback nicht nötig sein, wenn die Pakete korrekt installiert sind.
-            // Wenn execPath hier leer ist auf Vercel, ist etwas mit den @sparticuz Paketen fundamental falsch.
-            throw new Error("Executable path for Chromium could not be determined.");
+            console.warn("⚠ Kein executablePath erkannt (vermutlich lokal). Nutze lokalen Chrome.");
+            execPath = process.platform === 'win32'
+                ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+                : '/usr/bin/google-chrome-stable';
         }
 
-        console.log("Starte Puppeteer Browser...");
+        console.log("✅ Verwende executablePath:", execPath);
+
         browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
-            executablePath: execPath, // Verwende den ermittelten Pfad
+            executablePath: execPath,
             headless: chromium.headless,
             ignoreHTTPSErrors: true,
         });
-        console.log("Puppeteer Browser gestartet.");
 
         const page = await browser.newPage();
-        console.log("Neue Seite in Puppeteer erstellt.");
-
         await page.setContent(renderedHtml, { waitUntil: 'networkidle0' });
-        console.log("HTML-Inhalt auf Seite gesetzt.");
         await page.addStyleTag({ content: cssContent });
-        console.log("CSS zur Seite hinzugefügt.");
 
-        const footerDate = data.dokument.generierungsdatum || new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        const vermieterNameShort = data.vermieter && data.vermieter.name ? data.vermieter.name.substring(0, 30) : 'Vermieter';
+        const footerDate = data.dokument?.generierungsdatum || new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        const vermieterNameShort = data.vermieter?.name ? data.vermieter.name.substring(0, 30) : 'Vermieter';
 
-        console.log("Generiere PDF...");
         const pdfBuffer = await page.pdf({
             format: 'A4',
             printBackground: true,
@@ -104,18 +87,16 @@ async function createPdfFromData(data) {
                     <div>Seite <span class="pageNumber"></span> von <span class="totalPages"></span></div>
                 </div>
             `,
-            headerTemplate: '<div style="font-size: 7pt;"></div>'
+            headerTemplate: '<div style="font-size: 7pt;"></div>',
         });
-        console.log("PDF generiert.");
+
         return pdfBuffer;
 
     } catch (error) {
-        // Erfasse den Fehler hier, um ihn spezifischer zu loggen, bevor er weiter oben behandelt wird
         console.error("Fehler beim Starten des Browsers oder PDF-Generierung:", error);
-        throw error; // Wirf den Fehler weiter, damit der Handler ihn fangen kann
+        throw error;
     } finally {
-        if (browser !== null) {
-            console.log("Schließe Puppeteer Browser...");
+        if (browser) {
             await browser.close();
             console.log("Puppeteer Browser geschlossen.");
         }
@@ -124,27 +105,24 @@ async function createPdfFromData(data) {
 
 // Vercel Serverless Function Handler
 export default async function handler(req, res) {
-    if (req.method === 'POST') {
-        try {
-            const jsonData = req.body;
-            if (!jsonData || Object.keys(jsonData).length === 0) {
-                console.log("API Aufruf mit leerem oder fehlendem Body.");
-                return res.status(400).json({ error: 'Keine Daten im Request Body gefunden oder Body ist leer.' });
-            }
-            // console.log("Empfangene Daten für PDF-Generierung (Handler):", JSON.stringify(jsonData, null, 2));
-            const pdfBuffer = await createPdfFromData(jsonData);
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'attachment; filename="Nebenkostenabrechnung.pdf"');
-            res.send(pdfBuffer);
-        } catch (error) {
-            // Der Stack Trace sollte jetzt vom spezifischeren Catch-Block in createPdfFromData kommen
-            console.error("API Fehler (Handler):", error.stack || error);
-            const errorMessage = (process.env.NODE_ENV === 'development' || process.env.VERCEL_ENV === 'development' || process.env.VERCEL_ENV === 'preview')
-                                 ? (error.stack || String(error)) : 'Interner Serverfehler bei der PDF-Generierung.';
-            res.status(500).json({ error: 'Fehler bei der PDF-Generierung.', details: errorMessage });
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Nur POST erlaubt.' });
+    }
+
+    try {
+        const jsonData = req.body;
+        if (!jsonData || Object.keys(jsonData).length === 0) {
+            console.log("API Aufruf mit leerem oder fehlendem Body.");
+            return res.status(400).json({ error: 'Keine Daten im Request Body gefunden oder Body ist leer.' });
         }
-    } else {
-        res.setHeader('Allow', ['POST']);
-        res.status(405).end(`Method ${req.method} Not Allowed`);
+
+        const pdfBuffer = await createPdfFromData(jsonData);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename="Nebenkostenabrechnung.pdf"');
+        res.send(pdfBuffer);
+    } catch (error) {
+        console.error("API Fehler (Handler):", error.stack || error);
+        res.status(500).json({ error: 'Fehler bei der PDF-Generierung.', details: error.stack || error.toString() });
     }
 }

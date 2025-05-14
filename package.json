@@ -1,18 +1,13 @@
 {
-  "name": "premium-nk-abrechnung-api",
+  "name": "pdf-api",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "dev": "vercel dev",
-    "deploy": "vercel --prod"
-  },
   "engines": {
-  "node": "18.x"
-},
+    "node": "18.x"
+  },
   "dependencies": {
-    "@sparticuz/chrome-aws-lambda": "^17.1.3",
-    "@sparticuz/chromium-min": "^133.0.0",
-    "handlebars": "^4.7.7",
-    "puppeteer-core": "^17.1.3"
+    "@sparticuz/chrome-aws-lambda": "^27.0.0",
+    "puppeteer-core": "^20.8.1",
+    "handlebars": "^4.7.7"
   }
 }
