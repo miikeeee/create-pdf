@@ -6,6 +6,9 @@
     "dev": "vercel dev",
     "deploy": "vercel --prod"
   },
+  "engines": {
+  "node": "18.x"
+},
   "dependencies": {
     "@sparticuz/chrome-aws-lambda": "^17.1.3",
     "@sparticuz/chromium-min": "^133.0.0",
