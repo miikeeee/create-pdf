@@ -50,7 +50,7 @@ async function createPdfFromData(data) {
     let browser = null;
 
     try {
-        let execPath = await chromium.executablePath();
+        let execPath = chromium.executablePath;
 
         if (!execPath) {
             console.warn("⚠ Kein executablePath erkannt (vermutlich lokal). Nutze lokalen Chrome.");
