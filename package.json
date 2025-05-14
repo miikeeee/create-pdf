@@ -10,8 +10,8 @@
     "node": "18.x"
   },
   "dependencies": {
-    "puppeteer-core": "^17.1.3",
     "@sparticuz/chrome-aws-lambda": "^17.1.3",
-    "handlebars": "^4.7.7"
+    "handlebars": "^4.7.8",
+    "puppeteer-core": "^17.1.3"
   }
 }

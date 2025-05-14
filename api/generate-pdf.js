@@ -52,14 +52,14 @@ async function createPdfFromData(data) {
     try {
         let execPath = chromium.executablePath;
 
-        if (!execPath) {
-            console.warn("⚠ Kein executablePath erkannt (vermutlich lokal). Nutze lokalen Chrome.");
-            execPath = process.platform === 'win32'
-                ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-                : '/usr/bin/google-chrome-stable';
-        }
+    if (!execPath) {
+        console.warn("⚠ Kein executablePath erkannt. Fallback auf lokalen Chrome.");
+        execPath = process.platform === 'win32'
+            ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+            : '/usr/bin/google-chrome-stable';
+    }
 
-        console.log("✅ Verwende executablePath:", execPath);
+console.log("✅ Verwende executablePath:", execPath);
 
         browser = await puppeteer.launch({
             args: chromium.args,
