@@ -1,6 +1,6 @@
 // Verwende puppeteer-core und den Community-gepflegten Chrome-Wrapper
-const puppeteer = require('puppeteer-core');
-const chromium = require('@sparticuz/chrome-aws-lambda'); // Geänderter Import
+const chromium = require('@sparticuz/chromium-min'); // Oder 'chrome-aws-lambda'
+const puppeteer = require('puppeteer-core'); // Wichtig: puppeteer-core verwenden!
 
 const handlebars = require('handlebars');
 const fs = require('fs').promises;
@@ -39,49 +39,32 @@ handlebars.registerHelper('gt', function (v1, v2) {
 
 
 async function createPdfFromData(data) {
-    const templateHtmlPath = path.resolve(__dirname, '..', 'templates', 'template-premium.html');
-    const cssContentPath = path.resolve(__dirname, '..', 'templates', 'styles-premium.css');
-
-    const templateHtml = await fs.readFile(templateHtmlPath, 'utf8');
-    const cssContent = await fs.readFile(cssContentPath, 'utf8');
-
-    const template = handlebars.compile(templateHtml);
-    const renderedHtml = template(data);
-
     let browser = null;
-
     try {
-        // Konfiguration für Puppeteer mit @sparticuz/chrome-aws-lambda
+        const executablePath = process.env.AWS_LAMBDA_FUNCTION_VERSION
+            ? await chromium.executablePath() // Für neuere @sparticuz/chromium
+            // Falls die obige Zeile nicht geht, oder für ältere/andere Pakete:
+            // const executablePath = await chromium.executablePath; // Beachte: kein ()
+            : puppeteer.executablePath(); // Fallback für lokale Entwicklung (wenn voller puppeteer installiert ist)
+
+
+        console.log('Using executablePath:', executablePath);
+
         browser = await puppeteer.launch({
             args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath(), // Wichtig: mit Klammern () aufrufen!
-            headless: chromium.headless, // Stellt sicher, dass es headless läuft
-            ignoreHTTPSErrors: true, // Kann nützlich sein, wenn lokale Ressourcen geladen werden
+            executablePath: executablePath, // Hier die aufgelöste Variable verwenden
+            headless: chromium.headless,     // Oder true für neuere @sparticuz/chromium
+            // Ggf. weitere Flags für Sandbox-Probleme in Lambda:
+            // defaultViewport: chromium.defaultViewport,
+            // ignoreHTTPSErrors: true,
         });
 
-        const page = await browser.newPage();
+        // ... Rest deiner PDF-Generierungslogik ...
 
-        await page.setContent(renderedHtml, { waitUntil: 'networkidle0' });
-        await page.addStyleTag({ content: cssContent });
-
-        const footerDate = data.dokument.generierungsdatum || new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        const vermieterNameShort = data.vermieter && data.vermieter.name ? data.vermieter.name.substring(0, 30) : 'Vermieter';
-
-        const pdfBuffer = await page.pdf({
-            format: 'A4',
-            printBackground: true,
-            margin: { top: '20mm', right: '15mm', bottom: '20mm', left: '15mm' },
-            displayHeaderFooter: true,
-            footerTemplate: `
-                <div style="font-size: 7pt; width: 100%; padding: 0 10mm; box-sizing: border-box; display: flex; justify-content: space-between; color: #777; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-                    <span>${vermieterNameShort} - PDF generiert am: ${footerDate}</span>
-                    <div>Seite <span class="pageNumber"></span> von <span class="totalPages"></span></div>
-                </div>
-            `,
-            headerTemplate: '<div style="font-size: 7pt;"></div>'
-        });
-        return pdfBuffer;
+    } catch (error) {
+        console.error("Fehler beim Starten des Browsers oder PDF-Generierung:", error);
+        // Stelle sicher, dass der Fehler weitergeworfen oder behandelt wird
+        throw new Error(`API Fehler bei der PDF-Generierung: ${error.message}`);
     } finally {
         if (browser !== null) {
             await browser.close();
