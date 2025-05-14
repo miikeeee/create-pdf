@@ -1,0 +1,196 @@
+/* Global Styles */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.4;
+    color: #333;
+    background-color: #fff; /* Für den Fall, dass printBackground nicht greift im Browser-Debug */
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+}
+
+.page-container {
+    width: 180mm; /* Standard A4 minus Ränder */
+    margin: 0 auto; /* Zentriert für Browser-Ansicht */
+    padding: 10mm 0; /* Oberer/unterer "Innenrand" */
+}
+
+/* Header */
+.document-header {
+    display: flex;
+    justify-content: space-between; /* Verteilt Absender links und header-right-column rechts */
+    align-items: flex-start;
+    margin-bottom: 25px;
+    font-size: 9pt;
+}
+
+.address-block { /* Gilt für Sender und Empfänger */
+    /* width: 45%;  Diese Breite ist nicht mehr für beide Blöcke ideal, wird unten spezifischer */
+}
+.address-block p {
+    margin: 1px 0;
+}
+.block-title {
+    font-size: 7pt;
+    color: #777;
+    margin-bottom: 3px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.sender {
+    text-align: left;
+    width: 48%; /* Gibt dem Absender etwas Platz */
+}
+
+.header-right-column { /* NEUER STYLE für die rechte Spalte */
+    display: flex;
+    flex-direction: column; /* Elemente darin untereinander */
+    align-items: flex-end; /* Richtet die Elemente in der Spalte rechtsbündig aus */
+    width: 48%; /* Gibt der rechten Spalte etwas Platz */
+}
+
+.document-meta {
+    text-align: right; /* Bereits vorhanden, gut so */
+    margin-bottom: 10px; /* Abstand zwischen Ort/Datum und Empfänger */
+}
+
+.address-block.recipient { /* Spezifische Styles für den Empfängerblock */
+    text-align: right; /* Richtet den Text im Empfängerblock rechtsbündig aus */
+    width: 100%; /* Nimmt die volle Breite der header-right-column */
+}
+
+
+/* Main Title & Salutation */
+.main-title h1 {
+    font-size: 16pt;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 0 0 15px 0;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #1A5276;
+}
+.salutation p {
+    margin: 0 0 10px 0;
+}
+.salutation p:first-child {
+    font-weight: bold;
+}
+
+/* Sections */
+section {
+    margin-bottom: 20px;
+}
+section h2 {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #1A5276;
+    margin: 0 0 10px 0;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #eee;
+}
+
+/* Object Details */
+.details-grid {
+    display: grid;
+    grid-template-columns: 180px auto; /* Feste Breite für Labels, Rest für Werte */
+    gap: 3px 10px; /* Zeilen- und Spaltenabstand */
+    font-size: 9pt;
+}
+.details-grid div {
+    padding: 1px 0;
+}
+.details-grid div strong {
+    color: #555;
+}
+
+/* Cost Breakdown Table */
+.cost-breakdown table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+    margin-top: 5px;
+}
+.cost-breakdown th, .cost-breakdown td {
+    border: 1px solid #ddd;
+    padding: 6px 8px;
+    text-align: left;
+    vertical-align: top;
+}
+.cost-breakdown th {
+    background-color: #f2f7fc;
+    color: #34495e;
+    font-weight: bold;
+    text-align: center;
+}
+.cost-breakdown td.text-right, .cost-breakdown th.text-right {
+    text-align: right;
+}
+.col-nr { width: 4%; text-align: center !important; }
+.col-art { width: 28%; }
+.col-gesamt { width: 13%; text-align: right !important; }
+.col-verteiler { width: 20%; }
+.col-einheiten { width: 12%; text-align: right !important; }
+.col-anteil { width: 13%; text-align: right !important; }
+.col-kosten { width: 10%; text-align: right !important; font-weight: bold; }
+
+/* Summary Section */
+.summary-calculation {
+    font-size: 10pt;
+    max-width: 500px; /* Begrenzt die Breite für bessere Lesbarkeit */
+    margin-left: auto; /* Schiebt den Block nach rechts */
+    margin-top: 15px;
+}
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dotted #eee;
+}
+.summary-row:last-of-type { /* Das Endergebnis */
+    border-bottom: 1px solid #333;
+    border-top: 1px solid #333;
+    margin-top: 5px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+.summary-row span:last-child {
+    font-weight: bold;
+}
+.summary-row.bold span {
+    font-weight: bold;
+}
+.summary-row.total-costs {
+    color: #2c3e50;
+}
+.summary-row.final-result {
+    font-size: 11pt;
+}
+.summary-row.final-result.is-guthaben {
+    color: #27ae60; /* Grün für Guthaben */
+}
+.summary-row.final-result.is-nachzahlung {
+    color: #c0392b; /* Rot für Nachzahlung */
+}
+
+.payment-notice, .info-notice {
+    font-size: 9pt;
+    margin-top: 10px;
+    color: #555;
+}
+
+/* Closing Section */
+.closing-section p {
+    margin: 5px 0 15px 0;
+}
+.closing-section .signature-area {
+    margin-top: 30px;
+    font-size: 9pt;
+}
+.closing-section .signature-line {
+    width: 250px;
+    height: 1px;
+    background-color: #555;
+    margin-top: 30px;
+}

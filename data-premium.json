@@ -1,0 +1,78 @@
+{
+  "vermieter": {
+    "name": "Max Mustermann Immobilien GmbH",
+    "vorname": "",
+    "strasse": "Musterstraße 1",
+    "plz": "12345",
+    "ort": "Musterstadt"
+  },
+  "mieter": {
+    "anrede": "Frau",
+    "name": "Böck",
+    "vorname": "Laura",
+    "strasse": "Friedrichstraße 200",
+    "plz": "10117",
+    "ort": "Berlin"
+  },
+  "dokument": {
+    "ort": "Musterstadt",
+    "datum": "05.08.2024",
+    "betreff": "Betriebskostenabrechnung für das Jahr 2023",
+    "generierungsdatum": "05.08.2024"
+  },
+  "abrechnungsdetails": {
+    "zeitraumVon": "01.01.2023",
+    "zeitraumBis": "31.12.2023",
+    "nutzungszeitraumVon": "01.01.2023",
+    "nutzungszeitraumBis": "12.12.2023",
+    "nutzungstage": 346
+  },
+  "objekt": {
+    "strasse": "Hackescher Markt 2",
+    "plz": "10178",
+    "ort": "Berlin",
+    "lage": "2. OG links, Wohnung HM2",
+    "gesamtwohnflaecheQm": 850.00,
+    "gesamtwohneinheiten": 10,
+    "gesamtMiteigentumsanteile": 1000
+  },
+  "wohnungMieter": {
+    "wohnflaecheQm": 75.00,
+    "miteigentumsanteil": 70
+  },
+  "einleitungstext": "gemäß § 556 Abs. 3 BGB und den Vereinbarungen im Mietvertrag rechnen wir hiermit die von Ihnen geleisteten Vorauszahlungen für Betriebskosten für den oben genannten Zeitraum ab.",
+  "betriebskosten": [
+    { "nr": "1", "art": "Grundsteuer (Bescheid vom 15.02.2023)", "gesamtkosten": 2391.00, "verteilerschluessel": "Miteigentumsanteil", "gesamteinheiten": 1000, "ihrAnteilWert": 70, "ihrAnteilEinheit": "Anteile", "ihreKosten": 167.37 },
+    { "nr": "2", "art": "Wasserversorgung", "gesamtkosten": 1200.00, "verteilerschluessel": "Verbrauch (m³)", "gesamteinheiten": 500, "ihrAnteilWert": 35, "ihrAnteilEinheit": "m³", "ihreKosten": 84.00 },
+    { "nr": "3", "art": "Entwässerung (Schmutz- & Niederschlagswasser)", "gesamtkosten": 950.00, "verteilerschluessel": "qm Wohnfläche", "gesamteinheiten": 850, "ihrAnteilWert": 75, "ihrAnteilEinheit": "qm", "ihreKosten": 83.82 },
+    { "nr": "4", "art": "Aufzug (Betrieb, Wartung, Notruf)", "gesamtkosten": 1500.00, "verteilerschluessel": "Anzahl Wohneinheiten", "gesamteinheiten": 10, "ihrAnteilWert": 1, "ihrAnteilEinheit": "WE", "ihreKosten": 150.00 },
+    { "nr": "5", "art": "Straßenreinigung & Winterdienst", "gesamtkosten": 600.00, "verteilerschluessel": "Miteigentumsanteil", "gesamteinheiten": 1000, "ihrAnteilWert": 70, "ihrAnteilEinheit": "Anteile", "ihreKosten": 42.00 },
+    { "nr": "6", "art": "Müllbeseitigung (Rest-, Bio-, Papiermüll)", "gesamtkosten": 1800.00, "verteilerschluessel": "Anzahl Personen (Durchschnitt)", "gesamteinheiten": 25, "ihrAnteilWert": 2, "ihrAnteilEinheit": "Pers.", "ihreKosten": 144.00 },
+    { "nr": "7", "art": "Gebäudereinigung (Treppenhaus, Gemeinschaftsräume)", "gesamtkosten": 2822.00, "verteilerschluessel": "qm Wohnfläche", "gesamteinheiten": 850, "ihrAnteilWert": 75, "ihrAnteilEinheit": "qm", "ihreKosten": 249.00 },
+    { "nr": "8", "art": "Gartenpflege", "gesamtkosten": 1206.00, "verteilerschluessel": "qm Wohnfläche", "gesamteinheiten": 850, "ihrAnteilWert": 75, "ihrAnteilEinheit": "qm", "ihreKosten": 106.41 },
+    { "nr": "9", "art": "Beleuchtung (Allgemeinstrom Gemeinschaftsflächen)", "gesamtkosten": 2043.00, "verteilerschluessel": "Anzahl Wohneinheiten", "gesamteinheiten": 10, "ihrAnteilWert": 1, "ihrAnteilEinheit": "WE", "ihreKosten": 204.30 },
+    { "nr": "10", "art": "Schornsteinreinigung (Kehrgebühren)", "gesamtkosten": 300.00, "verteilerschluessel": "Anzahl Wohneinheiten", "gesamteinheiten": 10, "ihrAnteilWert": 1, "ihrAnteilEinheit": "WE", "ihreKosten": 30.00 },
+    { "nr": "11", "art": "Sach- & Haftpflichtversicherung Gebäude", "gesamtkosten": 800.00, "verteilerschluessel": "Miteigentumsanteil", "gesamteinheiten": 1000, "ihrAnteilWert": 70, "ihrAnteilEinheit": "Anteile", "ihreKosten": 56.00 },
+    { "nr": "12", "art": "Hauswart (Lohn- & Nebenkosten, umlagefähige Tätigkeiten)", "gesamtkosten": 3500.00, "verteilerschluessel": "Anzahl Wohneinheiten", "gesamteinheiten": 10, "ihrAnteilWert": 1, "ihrAnteilEinheit": "WE", "ihreKosten": 350.00 },
+    { "nr": "13", "art": "Gemeinschaftsantenne / Kabelanschluss (Grundgebühr)", "gesamtkosten": 450.00, "verteilerschluessel": "Anzahl Wohneinheiten", "gesamteinheiten": 10, "ihrAnteilWert": 1, "ihrAnteilEinheit": "WE", "ihreKosten": 45.00 },
+    { "nr": "14", "art": "Wartung Rauchwarnmelder", "gesamtkosten": 150.00, "verteilerschluessel": "Anzahl Rauchmelder Wohnung", "gesamteinheiten": 30, "ihrAnteilWert": 3, "ihrAnteilEinheit": "Stk.", "ihreKosten": 15.00 }
+  ],
+  "summen": {
+    "betriebskostenNetto": 1666.87,
+    "heizkostenAnteil": 450.50,
+    "warmwasserkostenAnteil": 180.20,
+    "gesamtkostenMieter": 2297.57,
+    "vorauszahlungBetriebskosten": 1800.00,
+    "vorauszahlungHeizkosten": 516.00,
+    "ergebnisBetrag": 18.43,
+    "ergebnisText": "Ihr Guthaben beträgt:",
+    "zahlungsHinweisGuthaben": "Das Guthaben wird mit der nächsten Mietzahlung verrechnet oder auf Ihr Konto überwiesen.",
+    "zahlungsHinweisNachzahlung": "Bitte überweisen Sie den Nachzahlungsbetrag bis zum [Datum] auf unser Konto."
+  },
+  "heizkostenHinweis": "Die detaillierte Aufschlüsselung der Heiz- und Warmwasserkosten entnehmen Sie bitte der beiliegenden separaten Heizkostenabrechnung.",
+  "abschluss": {
+    "grussformel": "Mit freundlichen Grüßen",
+    "belegeinsichtHinweis": "Zur Überprüfung dieser Abrechnung können Sie nach Terminvereinbarung die zugrundeliegenden Belege in unseren Büroräumen einsehen. Bitte beachten Sie die gesetzliche Einwendungsfrist von 12 Monaten nach Erhalt dieser Abrechnung.",
+    "unterschriftText": "Ihre Hausverwaltung / Ihr Vermieter"
+  }
+}

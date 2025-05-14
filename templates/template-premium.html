@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ dokument.betreff }}</title>
+    <link rel="stylesheet" href="styles-premium.css">
+</head>
+<body>
+    <div class="page-container">
+        <header class="document-header">
+            <div class="address-block sender">
+                <p class="block-title">Absender (Vermieter):</p>
+                <p>{{ vermieter.name }}</p>
+                {{#if vermieter.vorname}}<p>{{ vermieter.vorname }} {{ vermieter.name }}</p>{{/if}}
+                <p>{{ vermieter.strasse }}</p>
+                <p>{{ vermieter.plz }} {{ vermieter.ort }}</p>
+            </div>
+            <div class="document-meta">
+                <p>{{ dokument.ort }}, {{ dokument.datum }}</p>
+            </div>
+            <div class="address-block recipient">
+                <p class="block-title">Empfänger (Mieter):</p>
+                <p>{{ mieter.anrede }} {{ mieter.vorname }} {{ mieter.name }}</p>
+                <p>{{ mieter.strasse }}</p>
+                <p>{{ mieter.plz }} {{ mieter.ort }}</p>
+            </div>
+        </header>
+
+        <section class="main-title">
+            <h1>{{ dokument.betreff }}</h1>
+        </section>
+
+        <section class="salutation">
+            <p>Sehr geehrte/r {{ mieter.anrede }} {{ mieter.name }},</p>
+            <p>{{ einleitungstext }}</p>
+        </section>
+
+        <section class="object-details">
+            <h2>Angaben zum Mietobjekt und Abrechnungszeitraum</h2>
+            <div class="details-grid">
+                <div><strong>Mietobjekt:</strong></div><div>{{ objekt.strasse }}, {{ objekt.plz }} {{ objekt.ort }}</div>
+                <div><strong>Ihre Wohnung:</strong></div><div>{{ objekt.lage }}</div>
+                <div></div><div>Wohnfläche: {{ wohnungMieter.wohnflaecheQm }} qm, Miteigentumsanteil: {{ wohnungMieter.miteigentumsanteil }}/{{ objekt.gesamtMiteigentumsanteile }}</div>
+                
+                <div><strong>Gesamtobjekt:</strong></div><div>Gesamtwohnfläche: {{ objekt.gesamtwohnflaecheQm }} qm</div>
+                <div></div><div>Anzahl Wohneinheiten: {{ objekt.gesamtwohneinheiten }}</div>
+
+                <div><strong>Abrechnungszeitraum:</strong></div><div>{{ abrechnungsdetails.zeitraumVon }} - {{ abrechnungsdetails.zeitraumBis }}</div>
+                {{#if (ne abrechnungsdetails.nutzungszeitraumVon abrechnungsdetails.zeitraumVon)}}
+                <div><strong>Ihr Nutzungszeitraum:</strong></div><div>{{ abrechnungsdetails.nutzungszeitraumVon }} - {{ abrechnungsdetails.nutzungszeitraumBis }} ({{ abrechnungsdetails.nutzungstage }} Tage)</div>
+                {{/if}}
+            </div>
+        </section>
+
+        <section class="cost-breakdown">
+            <h2>Detailaufstellung der Betriebskosten</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-nr">Nr.</th>
+                        <th class="col-art">Kostenart</th>
+                        <th class="col-gesamt">Gesamtkosten<br>Gebäude (€)</th>
+                        <th class="col-verteiler">Verteilerschlüssel</th>
+                        <th class="col-einheiten">Gesamt-<br>einheiten</th>
+                        <th class="col-anteil">Ihr Anteil</th>
+                        <th class="col-kosten">Ihre Kosten (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each betriebskosten}}
+                    <tr>
+                        <td>{{this.nr}}</td>
+                        <td>{{this.art}}</td>
+                        <td class="text-right">{{formatCurrency this.gesamtkosten}}</td>
+                        <td>{{this.verteilerschluessel}}</td>
+                        <td class="text-right">{{this.gesamteinheiten}}</td>
+                        <td class="text-right">{{this.ihrAnteilWert}} {{this.ihrAnteilEinheit}}</td>
+                        <td class="text-right">{{formatCurrency this.ihreKosten}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="summary-section">
+            <h2>Zusammenfassung und Ergebnis</h2>
+            <div class="summary-calculation">
+                <div class="summary-row">
+                    <span>Summe umlagefähige Betriebskosten (ohne Heizung/Warmwasser)</span>
+                    <span class="text-right">{{formatCurrency summen.betriebskostenNetto}} €</span>
+                </div>
+                <div class="summary-row">
+                    <span>+ Ihre anteiligen Heizkosten (gem. Heizkostenabrechnung)</span>
+                    <span class="text-right">{{formatCurrency summen.heizkostenAnteil}} €</span>
+                </div>
+                <div class="summary-row">
+                    <span>+ Ihre anteiligen Warmwasserkosten (gem. Heizkostenabrechnung)</span>
+                    <span class="text-right">{{formatCurrency summen.warmwasserkostenAnteil}} €</span>
+                </div>
+                <div class="summary-row bold total-costs">
+                    <span>= Gesamtkosten Ihrer Mieteinheit</span>
+                    <span class="text-right">{{formatCurrency summen.gesamtkostenMieter}} €</span>
+                </div>
+                <div class="summary-row">
+                    <span>- Ihre Vorauszahlungen Betriebskosten</span>
+                    <span class="text-right">{{formatCurrency summen.vorauszahlungBetriebskosten}} €</span>
+                </div>
+                <div class="summary-row">
+                    <span>- Ihre Vorauszahlungen Heizkosten</span>
+                    <span class="text-right">{{formatCurrency summen.vorauszahlungHeizkosten}} €</span>
+                </div>
+                <div class="summary-row bold final-result {{#if (gt summen.ergebnisBetrag 0)}}is-guthaben{{else}}is-nachzahlung{{/if}}">
+                    <span>{{summen.ergebnisText}}</span>
+                    <span class="text-right">{{formatCurrencyPositive summen.ergebnisBetrag}} €</span>
+                </div>
+            </div>
+            <p class="payment-notice">
+                {{#if (gt summen.ergebnisBetrag 0)}}
+                    {{summen.zahlungsHinweisGuthaben}}
+                {{else}}
+                    {{summen.zahlungsHinweisNachzahlung}}
+                {{/if}}
+            </p>
+            {{#if heizkostenHinweis}}
+                <p class="info-notice">{{heizkostenHinweis}}</p>
+            {{/if}}
+        </section>
+
+        <section class="closing-section">
+            <p>{{abschluss.belegeinsichtHinweis}}</p>
+            <p>{{abschluss.grussformel}},</p>
+            <div class="signature-area">
+                <p>{{abschluss.unterschriftText}}</p>
+                <div class="signature-line"></div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
