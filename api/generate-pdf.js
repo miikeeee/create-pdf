@@ -39,9 +39,7 @@ async function createPdfFromData(data) {
     const templateHtmlPath = path.resolve(__dirname, '..', 'templates', 'template-premium.html');
     const cssContentPath = path.resolve(__dirname, '..', 'templates', 'styles-premium.css');
 
-    console.log("Lese HTML Template von:", templateHtmlPath);
     const templateHtml = await fs.readFile(templateHtmlPath, 'utf8');
-    console.log("Lese CSS von:", cssContentPath);
     const cssContent = await fs.readFile(cssContentPath, 'utf8');
 
     const template = handlebars.compile(templateHtml);
@@ -50,16 +48,15 @@ async function createPdfFromData(data) {
     let browser = null;
 
     try {
+        // ✅ Richtig: kein await, keine Klammern, direkt als Property nutzen
         let execPath = chromium.executablePath;
 
-    if (!execPath) {
-        console.warn("⚠ Kein executablePath erkannt. Fallback auf lokalen Chrome.");
-        execPath = process.platform === 'win32'
-            ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-            : '/usr/bin/google-chrome-stable';
-    }
-
-console.log("✅ Verwende executablePath:", execPath);
+        if (!execPath) {
+            console.warn("⚠ Kein executablePath erkannt. Fallback auf lokalen Chrome.");
+            execPath = process.platform === 'win32'
+                ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+                : '/usr/bin/google-chrome-stable';
+        }
 
         browser = await puppeteer.launch({
             args: chromium.args,
@@ -112,7 +109,6 @@ export default async function handler(req, res) {
     try {
         const jsonData = req.body;
         if (!jsonData || Object.keys(jsonData).length === 0) {
-            console.log("API Aufruf mit leerem oder fehlendem Body.");
             return res.status(400).json({ error: 'Keine Daten im Request Body gefunden oder Body ist leer.' });
         }
 
